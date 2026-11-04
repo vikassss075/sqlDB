@@ -6,7 +6,8 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'Root@dev2026',
-    database: 'testDB'
+    database: 'testDB',
+    multipleStatements: true
 })
 
 connection.connect((err)=>{
@@ -16,13 +17,33 @@ connection.connect((err)=>{
     }
     console.log("connection has been created");
 
-    const creationQuery = `create table students (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(20),
-        email VARCHAR(20)
-    )`
+        const creationQuery = `
+        CREATE TABLE IF NOT EXISTS Users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(50),
+            email VARCHAR(255)
+        );
+        
+        CREATE TABLE IF NOT EXISTS Buses (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            busNumber INT,
+            totalSeats INT
+        );
 
-    connection.execute(creationQuery, (err)=>{
+        CREATE TABLE IF NOT EXISTS Bookings (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            seatNumber INT
+        );
+
+        CREATE TABLE IF NOT EXISTS Payments (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            amountPaid INT,
+            paymentStatus VARCHAR(20)
+        );
+    `;
+
+
+    connection.query(creationQuery, (err)=>{
         if(err){
             console.log(err);
             connection.end();
